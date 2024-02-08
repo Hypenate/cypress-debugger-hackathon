@@ -153,3 +153,5 @@ npm_config_registry=http://localhost:4873 npm run publish-npm -- -- latest
 # use the new package
 npm_config_registry=http://localhost:4873 npm i cypress-debugger  --@currents:registry=http://localhost:4873
 ```
+
+Rebuild
