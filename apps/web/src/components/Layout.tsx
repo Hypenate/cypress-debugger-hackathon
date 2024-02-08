@@ -1,4 +1,5 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/Tabs';
+import { useToast } from '@/components/ui/useToast';
 import { useCypressEventsContext } from '@/context/cypressEvents';
 import { useHttpArchiveContext } from '@/context/httpArchiveEntries';
 import { useReplayerContext } from '@/context/replayer';
@@ -15,6 +16,8 @@ import Player from './Player';
 import { Button } from './ui/Button';
 
 function GridLayout() {
+  const { toast } = useToast();
+
   const {
     events,
     selectedEvent,
@@ -42,6 +45,15 @@ function GridLayout() {
     setMeta(null);
     setBrowserLogs(null);
     clearQueryParam();
+  };
+
+  const handleCopySpecNameToClipboard = async () => {
+    if (!meta) return;
+    await navigator.clipboard.writeText(meta.spec);
+
+    toast({
+      title: 'Filename copied to clipboard',
+    });
   };
 
   return (
@@ -92,11 +104,35 @@ function GridLayout() {
           </div>
           {events.length > 0 && (
             <div className="w-full grid grid-cols-[2fr_7fr_3fr] h-[calc(100vh-5rem)] divide-x divide-slate-300 dark:divide-slate-700">
-              <div className="">
+              <div>
                 {meta && (
                   <div className="p-4 border-b">
-                    <div className="text-amber-700 dark:text-amber-500 font-semibold">
-                      {meta?.spec}
+                    <div className="flex flex-row gap-2 justify-between items-center">
+                      <div className="text-amber-700 dark:text-amber-500 font-semibold">
+                        {meta?.spec}
+                      </div>
+
+                      <Button
+                        onClick={handleCopySpecNameToClipboard}
+                        className="bg-transparent hover:bg-transparent"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="icon icon-tabler icon-tabler-clipboard hover:stroke-amber-500"
+                          width="30"
+                          height="30"
+                          viewBox="0 0 24 24"
+                          strokeWidth="1.5"
+                          stroke="#2c3e50"
+                          fill="none"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                          <path d="M9 5h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-12a2 2 0 0 0 -2 -2h-2" />
+                          <path d="M9 3m0 2a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v0a2 2 0 0 1 -2 2h-2a2 2 0 0 1 -2 -2z" />
+                        </svg>
+                      </Button>
                     </div>
                     <div className="font-base">{meta?.test.join(' > ')}</div>
                     <div className="font-base">
