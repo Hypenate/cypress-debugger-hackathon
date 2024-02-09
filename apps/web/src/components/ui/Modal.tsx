@@ -8,7 +8,9 @@ interface ModalProps {
 }
 
 function Modal({ showModal, onClose, onSave }: ModalProps) {
-  const [inputValue, setInputValue] = useState<string>('');
+  const [inputValue, setInputValue] = useState<string>(
+    localStorage.getItem('filepathPrefix') ?? 'c:/git/grizzly'
+  );
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
