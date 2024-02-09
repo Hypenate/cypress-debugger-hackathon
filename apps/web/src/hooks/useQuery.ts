@@ -28,3 +28,4 @@ const createUseQueryParams =
   };
 
 export const usePayloadQueryParam = createUseQueryParams('payload');
+export const useCiPathPrefixQueryParam = createUseQueryParams('ciPathPrefix');

@@ -1,30 +1,25 @@
+import { useCypressEventsContext } from '@/context/cypressEvents';
+import { useHttpArchiveContext } from '@/context/httpArchiveEntries';
+import { useReplayerContext } from '@/context/replayer';
+import {
+  useCiPathPrefixQueryParam,
+  usePayloadQueryParam,
+} from '@/hooks/useQuery';
 import { TestExecutionResult } from 'cypress-debugger';
 import { Loader2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { useCypressEventsContext } from '../context/cypressEvents';
-import { useHttpArchiveContext } from '../context/httpArchiveEntries';
-import { useReplayerContext } from '../context/replayer';
 import usePayloadFetcher from '../hooks/usePayloadFetcher';
-import { usePayloadQueryParam } from '../hooks/useQuery';
 import JsonFileUpload from './JsonFileUpload';
 
-function extractPath(agentPath: string | null) {
+function extractPath(
+  queryCiPathPrefixParam: string | null,
+  agentPath: string | null
+) {
   if (!agentPath) {
     return '';
   }
 
-  const parts = agentPath.split('/');
-
-  const libsIndex = parts.indexOf('libs');
-  const appsIndex = parts.indexOf('apps');
-
-  const startIndex = libsIndex !== -1 ? libsIndex : appsIndex;
-
-  if (startIndex === -1) {
-    return null; // 'libs' or 'apps' not found in the path
-  }
-
-  return parts.slice(startIndex).join('/');
+  return agentPath.replace(queryCiPathPrefixParam ?? '', '');
 }
 
 function PayloadHandler() {
@@ -37,6 +32,7 @@ function PayloadHandler() {
   const { setEvents, setMeta, setBrowserLogs } = useCypressEventsContext();
 
   const [queryParam] = usePayloadQueryParam();
+  const [queryCiPathPrefixParam] = useCiPathPrefixQueryParam();
 
   const validate = (payload: TestExecutionResult) =>
     Object.keys(payload).every((key) =>
@@ -62,7 +58,8 @@ function PayloadHandler() {
     const colNumber: number =
       parsedStack?.find((item: { column: number }) => item.column)?.column ?? 1;
 
-    const absoluteFilePath = extractPath(absoluteFile) ?? '';
+    const absoluteFilePath =
+      extractPath(queryCiPathPrefixParam, absoluteFile) ?? '';
 
     setMeta(
       payload?.meta
