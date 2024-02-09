@@ -6,6 +6,7 @@ import { useReplayerContext } from '@/context/replayer';
 import { usePayloadQueryParam } from '@/hooks/useQuery';
 import { testStateVariants } from '@/lib/testState';
 import { cn } from '@/lib/utils';
+import { useState } from 'react';
 import Console from './Console';
 import CyEvents from './CyEvents';
 import DarkModeToggle from './DarkModeToggle';
@@ -14,9 +15,34 @@ import Network from './Network';
 import PayloadHandler from './PayloadHandler';
 import Player from './Player';
 import { Button } from './ui/Button';
+import { Modal } from './ui/Modal';
 
 function GridLayout() {
   const { toast } = useToast();
+
+  // Modal
+  const [showModal, setShowModal] = useState(false);
+  const [, setInputValue] = useState('');
+
+  const handleShowModal = () => {
+    setInputValue(localStorage.getItem('filepathPrefix') ?? '');
+    setShowModal(!showModal);
+  };
+
+  const handleModalClose = () => {
+    setShowModal(false);
+  };
+
+  const handleModalSave = (value: string) => {
+    setInputValue(value);
+
+    localStorage.setItem('filepathPrefix', value);
+    setShowModal(false);
+
+    toast({
+      title: 'Settings saved',
+    });
+  };
 
   const {
     events,
@@ -32,8 +58,6 @@ function GridLayout() {
   const { origin, setOrigin, setReplayerData } = useReplayerContext();
   const { entries, setHttpArchiveLog } = useHttpArchiveContext();
   const [, , clearQueryParam] = usePayloadQueryParam();
-
-  console.log('meta', meta);
 
   const logsCount =
     (browserLogs?.logEntry.length ?? 0) +
@@ -61,9 +85,8 @@ function GridLayout() {
   const handleOpenInVsCode = async (absoluteFile: string) => {
     if (!absoluteFile) return;
 
-    const selliPrefix = 'c:/git/grizzly' as const;
-
-    const vscodeUri = `vscode://file/${selliPrefix}/${absoluteFile}`;
+    const filepathPrefix = localStorage.getItem('filepathPrefix') ?? 'c:/git';
+    const vscodeUri = `vscode://file/${filepathPrefix}/${absoluteFile}`;
 
     window.open(vscodeUri, '_blank');
   };
@@ -72,7 +95,36 @@ function GridLayout() {
     <>
       <div className="absolute top-5 right-8 z-10">
         <DarkModeToggle />
+        <Button
+          onClick={handleShowModal}
+          className="m-0 p-0 bg-transparent hover:bg-transparent hover:text-amber-700 text-slate-500"
+        >
+          <svg
+            id="vs_setting_svg"
+            xmlns="http://www.w3.org/2000/svg"
+            className="icon icon-tabler icon-tabler-setting"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            strokeWidth="1.5"
+            stroke="currentColor"
+            fill="none"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+            <path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z" />
+            <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
+          </svg>
+        </Button>
       </div>
+
+      <Modal
+        showModal={showModal}
+        onClose={handleModalClose}
+        onSave={handleModalSave}
+      />
+
       {!origin && (
         <div className="w-screen h-screen flex items-center justify-center">
           <div className="h-96 w-[70%]">
