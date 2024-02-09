@@ -11,10 +11,8 @@ export type CypressEventsContextType = {
   beforeAfter: BeforeAfter;
   setSelectedEvent: (i: number) => void;
   setBeforeAfter: (i: BeforeAfter) => void;
-  meta: (TestExecutionResult['meta'] & { absoluteFile: string }) | null;
-  setMeta: (
-    events: (TestExecutionResult['meta'] & { absoluteFile: string }) | null
-  ) => void;
+  meta: TestExecutionResult['meta'] | null;
+  setMeta: (events: TestExecutionResult['meta'] | null) => void;
   browserLogs: TestExecutionResult['browserLogs'] | null;
   setBrowserLogs: (events: TestExecutionResult['browserLogs'] | null) => void;
 };
@@ -41,9 +39,7 @@ export default function CypresEventsContextProvider({
 }: PropsWithChildren<unknown>) {
   const [beforeAfter, setBeforeAfter] = useState<BeforeAfter>('before');
   const [cypressEvents, setCypressEvents] = useState<CypressEvent[]>([]);
-  const [meta, setMeta] = useState<
-    (TestExecutionResult['meta'] & { absoluteFile: string }) | null
-  >(null);
+  const [meta, setMeta] = useState<TestExecutionResult['meta'] | null>(null);
   const [selectedEvent, setSelectedEvent] = useState(-1);
   const [browserLogs, setBrowserLogs] = useState<
     TestExecutionResult['browserLogs'] | null

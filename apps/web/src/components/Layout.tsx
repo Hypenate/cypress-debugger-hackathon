@@ -64,6 +64,7 @@ function GridLayout() {
     const selliPrefix = 'c:/git/grizzly' as const;
 
     const vscodeUri = `vscode://file/${selliPrefix}/${absoluteFile}`;
+
     window.open(vscodeUri, '_blank');
   };
 

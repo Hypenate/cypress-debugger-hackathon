@@ -123,7 +123,12 @@ export type BrowserLog = {
 
 export type TestExecutionResult = {
   id: string;
-  meta: RunContextData & { state: TestState };
+  meta: RunContextData & {
+    state: TestState;
+    absoluteFile: string;
+    lineNumber: number;
+    colNumber: number;
+  };
   cy: CypressEvent[];
   rr: RRWebEvent[];
   har: HttpArchiveLog | null;

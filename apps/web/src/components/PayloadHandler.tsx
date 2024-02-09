@@ -56,9 +56,12 @@ function PayloadHandler() {
     const absoluteFile: string = parsedStack?.find(
       (item: { absoluteFile: string }) => item.absoluteFile
     ).absoluteFile;
+    const lineNumber: number =
+      parsedStack?.find((item: { line: number }) => item.line)?.line ?? 1;
 
-    // /var/vsts/temporary-agent-grizzly-beta-mchj2/1/s/libs/smc/admin-config/connectors/feature-manage-e2e/src/e2e/ui/connectors-form-validation.cy.ts
-    // get the part starting from /libs or /apps
+    const colNumber: number =
+      parsedStack?.find((item: { column: number }) => item.column)?.column ?? 1;
+
     const absoluteFilePath = extractPath(absoluteFile) ?? '';
 
     setMeta(
@@ -66,6 +69,8 @@ function PayloadHandler() {
         ? {
             ...payload.meta,
             absoluteFile: absoluteFilePath,
+            lineNumber,
+            colNumber,
           }
         : null
     );
