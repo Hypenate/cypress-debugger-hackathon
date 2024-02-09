@@ -161,8 +161,8 @@ function GridLayout() {
       {!!origin && (
         <div className="">
           <div className="relative flex items-center justify-center h-20 border-b border-slate-300 dark:border-slate-700">
-            <p className="px-6">
-              <span>Payload from:</span> <span>{origin}</span>
+            <p className="px-6 max-w-[900px]">
+              <span>{origin.substring(origin.lastIndexOf('/') + 1)}</span>
             </p>
             <Button className="px-6 h-9 rounded border" onClick={handleClick}>
               Remove
