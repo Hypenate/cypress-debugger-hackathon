@@ -37,7 +37,7 @@ function Modal({ showModal, onClose, onSave }: ModalProps) {
           <div className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
             <div className="bg-white dark:bg-slate-700 px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
               <div className="sm:flex sm:items-start">
-                <div className="flex h-12 w-12 mx-5 flex-shrink-0  self-end items-center justify-center rounded-full sm:mx-0 sm:h-10 sm:w-10 text-gray-500 dark:text-slate-500">
+                <div className="flex h-12 w-12 mx-5 flex-shrink-0  self-end items-center justify-center rounded-full sm:mx-0 sm:h-10 sm:w-10 text-slate-300 dark:text-slate-500">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="icon icon-tabler icon-tabler-folder"
@@ -58,7 +58,7 @@ function Modal({ showModal, onClose, onSave }: ModalProps) {
                   {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
                   <label htmlFor="inputField">Filepath prefix</label>
                   <input
-                    className="w-full rounded mb-1 px-1 bg-white dark:bg-slate-700 text-gray-700 dark:text-white border-0 focus:border-0"
+                    className="w-full rounded mb-1 px-1 bg-white dark:bg-slate-700 text-gray-700 dark:text-white border-none focus:border-none focus:border-0"
                     type="text"
                     id="inputField"
                     value={inputValue}

@@ -97,7 +97,7 @@ function GridLayout() {
         <DarkModeToggle />
         <Button
           onClick={handleShowModal}
-          className="m-0 p-0 bg-transparent hover:bg-transparent hover:text-amber-700 text-slate-500"
+          className="m-0 p-0 bg-transparent hover:bg-transparent hover:text-amber-700 text-slate-300"
         >
           <svg
             id="vs_setting_svg"
