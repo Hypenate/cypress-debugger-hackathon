@@ -33,6 +33,8 @@ function GridLayout() {
   const { entries, setHttpArchiveLog } = useHttpArchiveContext();
   const [, , clearQueryParam] = usePayloadQueryParam();
 
+  console.log('meta', meta);
+
   const logsCount =
     (browserLogs?.logEntry.length ?? 0) +
     (browserLogs?.runtimeConsoleApiCalled.length ?? 0);
@@ -54,6 +56,15 @@ function GridLayout() {
     toast({
       title: 'Filename copied to clipboard',
     });
+  };
+
+  const handleOpenInVsCode = async (absoluteFile: string) => {
+    if (!absoluteFile) return;
+
+    const selliPrefix = 'c:/git/grizzly' as const;
+
+    const vscodeUri = `vscode://file/${selliPrefix}/${absoluteFile}`;
+    window.open(vscodeUri, '_blank');
   };
 
   return (
@@ -112,27 +123,54 @@ function GridLayout() {
                         {meta?.spec}
                       </div>
 
-                      <Button
-                        onClick={handleCopySpecNameToClipboard}
-                        className="bg-transparent hover:bg-transparent"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="icon icon-tabler icon-tabler-clipboard hover:stroke-amber-500"
-                          width="30"
-                          height="30"
-                          viewBox="0 0 24 24"
-                          strokeWidth="1.5"
-                          stroke="#2c3e50"
-                          fill="none"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
+                      <div className="flex flex-row gap-2">
+                        <Button
+                          onClick={() => handleOpenInVsCode(meta.absoluteFile)}
+                          className="m-0 p-0 bg-transparent hover:bg-transparent hover:text-amber-700 text-slate-500"
                         >
-                          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                          <path d="M9 5h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-12a2 2 0 0 0 -2 -2h-2" />
-                          <path d="M9 3m0 2a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v0a2 2 0 0 1 -2 2h-2a2 2 0 0 1 -2 -2z" />
-                        </svg>
-                      </Button>
+                          <svg
+                            id="vs_code_svg"
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="icon icon-tabler icon-tabler-brand-vscode"
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            strokeWidth="1.5"
+                            stroke="currentColor"
+                            fill="none"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          >
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                            <path d="M16 3v18l4 -2.5v-13z" />
+                            <path d="M9.165 13.903l-4.165 3.597l-2 -1l4.333 -4.5m1.735 -1.802l6.932 -7.198v5l-4.795 4.141" />
+                            <path d="M16 16.5l-11 -10l-2 1l13 13.5" />
+                          </svg>
+                        </Button>
+
+                        <Button
+                          onClick={handleCopySpecNameToClipboard}
+                          className="m-0 p-0 bg-transparent hover:bg-transparent hover:text-amber-700 text-slate-500"
+                        >
+                          <svg
+                            id="vs_code_svg"
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="icon icon-tabler icon-tabler-brand-vscode"
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            strokeWidth="1.5"
+                            stroke="currentColor"
+                            fill="none"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          >
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                            <path d="M9 5h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-12a2 2 0 0 0 -2 -2h-2" />
+                            <path d="M9 3m0 2a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v0a2 2 0 0 1 -2 2h-2a2 2 0 0 1 -2 -2z" />
+                          </svg>
+                        </Button>
+                      </div>
                     </div>
                     <div className="font-base">{meta?.test.join(' > ')}</div>
                     <div className="font-base">

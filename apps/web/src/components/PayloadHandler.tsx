@@ -8,6 +8,25 @@ import usePayloadFetcher from '../hooks/usePayloadFetcher';
 import { usePayloadQueryParam } from '../hooks/useQuery';
 import JsonFileUpload from './JsonFileUpload';
 
+function extractPath(agentPath: string | null) {
+  if (!agentPath) {
+    return '';
+  }
+
+  const parts = agentPath.split('/');
+
+  const libsIndex = parts.indexOf('libs');
+  const appsIndex = parts.indexOf('apps');
+
+  const startIndex = libsIndex !== -1 ? libsIndex : appsIndex;
+
+  if (startIndex === -1) {
+    return null; // 'libs' or 'apps' not found in the path
+  }
+
+  return parts.slice(startIndex).join('/');
+}
+
 function PayloadHandler() {
   const [loading, setLoading] = useState(false);
 
@@ -30,7 +49,26 @@ function PayloadHandler() {
     setEvents(payload?.cy || []);
     setReplayerData(payload?.rr || []);
     setHttpArchiveLog(payload?.har || null);
-    setMeta(payload?.meta ?? null);
+    const stackTraceEvent = payload?.cy.find(
+      (item) => item.payload.err?.parsedStack
+    );
+    const parsedStack = stackTraceEvent?.payload.err?.parsedStack;
+    const absoluteFile: string = parsedStack?.find(
+      (item: { absoluteFile: string }) => item.absoluteFile
+    ).absoluteFile;
+
+    // /var/vsts/temporary-agent-grizzly-beta-mchj2/1/s/libs/smc/admin-config/connectors/feature-manage-e2e/src/e2e/ui/connectors-form-validation.cy.ts
+    // get the part starting from /libs or /apps
+    const absoluteFilePath = extractPath(absoluteFile) ?? '';
+
+    setMeta(
+      payload?.meta
+        ? {
+            ...payload.meta,
+            absoluteFile: absoluteFilePath,
+          }
+        : null
+    );
     setBrowserLogs(payload?.browserLogs || null);
   };
 

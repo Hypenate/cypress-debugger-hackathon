@@ -26,7 +26,7 @@ export type CypressRawEvent = {
   viewportHeight: number;
   viewportWidth: number;
   wallClockStartedAt: string;
-  [x: string]: unknown;
+  [x: string]: any;
 };
 
 export type RawEvent = CypressRawEvent | RRWebRawEvent;
